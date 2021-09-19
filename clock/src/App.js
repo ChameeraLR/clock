@@ -42,15 +42,15 @@ const WaveShaderMaterial = shaderMaterial(
 
     uniform vec3 uColor;
     uniform float uTime;
-    uniform sampler2D uTexture;
+   // uniform sampler2D uTexture;
 
     varying vec2 vUv;
     varying float vWave;
 
     void main() {
       float wave = vWave * 0.2;
-      vec3 texture = texture2D(uTexture, vUv + wave).rgb;
-      gl_FragColor = vec4(texture, 1.0);
+      int c = mod(uTime,255);
+      gl_FragColor = vec4(vUv.x * uColor.r+vWave,vUv.y * uColor.g-vWave,  wave , 1.0);
     }
   `
 );
@@ -61,14 +61,10 @@ const Wave = () => {
   const ref = useRef();
   useFrame(({ clock }) => (ref.current.uTime = clock.getElapsedTime()));
 
-  const [image] = useLoader(THREE.TextureLoader, [
-    "https://images.unsplash.com/photo-1604011092346-0b4346ed714e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1534&q=80"
-  ]);
-
   return (
     <mesh>
-     // <planeBufferGeometry args={[5, 5, 16, 16]} />
-     // <waveShaderMaterial uColor={"hotpink"} ref={ref} uTexture={image} />
+       <planeBufferGeometry args={[8, 8]} />
+       <waveShaderMaterial uColor={"hotpink"} ref={ref} /*uTexture={image}*/ />
     </mesh>
   );
 };
@@ -86,7 +82,6 @@ const Scene = () => {
 const App = () => {
   return (
     <>
-      //<h1>POMADA MODELADORA</h1>
       <Scene />
     </>
   );
